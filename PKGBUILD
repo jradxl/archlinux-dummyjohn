@@ -21,7 +21,7 @@ source=("https://github.com/jradxl/dummyjohn/releases/download/v${pkgver}/${pkgn
 #noextract=("")
 
 # If "ERROR: Integrity checks are missing", then use updpkgsums (previously makepkg -g >> PKGBUILD)
-# and the md5 line will be appended to this file.
+# and the md5 line will be replaced here.
 # Each file in source has a md5 value between '' separated by space.
 md5sums=('ee131f2926be18de7de0d4dc9deae4f8'
          '9f9db547f8d05f3502e610c9fbba4f77')
@@ -64,4 +64,3 @@ package()
 
   #install -m644 "${srcdir}"/dummyjohn.zip "${pkgdir}"/opt/dummyjohn/plugins
 }
-
