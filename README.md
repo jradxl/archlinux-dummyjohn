@@ -6,15 +6,26 @@ A dummy package for learning the Package Build, Install and Service features of 
 The dummy package to install is dummyjohn from https://github.com/jradxl/dummyjohn
 This install package is from https://github.com/jradxl/archlinux-dummyjohn
 
-My /etc/pacman.conf
-I have a custom repository entered before any other repositories, thus
+Usage:
 
-[custom]
-SigLevel = Never
-Server = https://github.com/jradxl/archlinux-dummyjohn/releases/download/v0.1.1/archlinux-dummyjohn-0.1.1.tar.gz
+Download this package and unpack the tar.gz to some convenient directory in home. 
 
-When I run 
-    $ sudo pacman -S archlinux-dummyjohn
-it will install the package
+You can get get the tar.gz from the Release page of github.
+
+cd your directory
+
+execute makepkg
+
+(if you are repeating, then use makepkg -c or makepkg -fc beforehand to clean up)
+
+makepkg may complain about integrity checks.
+
+To update md5 execute updpkgsums, (previously makepkg -g >> PKGBUILD)
+
+makepkg will generate dummyjohn-0.1.1-1-any.pkg.tar.xz
+
+where 0.1.1 is the version, the 1 is the release and the any is the architecture
+
+
 
 March 2014

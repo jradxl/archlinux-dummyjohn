@@ -5,10 +5,12 @@
 
 
 ## arg 1: the new package version
-#pre_install()
-#{
-# do something here
-#}
+## These hooks are executed as shell scripts
+## and so the arguments are $1, $2 etc.
+pre_install()
+{
+    echo "==> Pre-install : Argument1 = " $1
+}
 
 ## arg 1: the new package version
 post_install()
@@ -23,20 +25,26 @@ post_install()
   ln -sf /opt/dummyjohn/config /etc/dummyjohn
   ln -sf /opt/dummyjohn/bin/console.sh /usr/bin/dummyjohn-console
 
+  echo "==> Post-install : Argument1 = " $1
   echo "==> DummyJohn install completed. New User is dummyjohn"
 }
 
 
 ## arg 1: the new package version
 ## arg 2: the old package version
-#pre_upgrade() {
-# do something here
-#}
+pre_upgrade()
+{
+    echo "==> Pre-upgrade : Argument1 = " $1
+    echo "==> Pre-upgrade : Argument2 = " $2
+}
 
 ## arg 1: the new package version
 ## arg 2: the old package version
 post_upgrade()
 {
+  echo "==> Post-upgrade : Argument1 = " $1
+  echo "==> Post-upgrade : Argument2 = " $2
+
   chown -R dummyjohn.dummyjohn /opt/dummyjohn
   chown -R dummyjohn.dummyjohn /var/log/dummyjohn
 }
@@ -44,6 +52,8 @@ post_upgrade()
 ## arg 1: the old package version
 pre_remove()
 {
+  echo "==> Pre_remove : Argument1 = " $1
+
   if [ "$(ps aux | grep -e '^dummyjohn' | grep -v grep)" != "" ]; then
     echo -n "==> DummyJohn server is running. Stopping dummyjohn"
     systemctl stop dummyjohn.service
@@ -52,21 +62,24 @@ pre_remove()
     done
     echo "."
   fi
-  rm /etc/dummyjohn /usr/bin/dummyjohn-console /opt/dummyjohn/log || /bin/true
+  rm -rf /etc/dummyjohn /usr/bin/dummyjohn-console /opt/dummyjohn/log || /bin/true
 }
 
 ## arg 1: the old package version
 post_remove()
 {
+  echo "==> Post_remove : Argument1 = " $1
+
   userdel dummyjohn
   groupdel dummyjohn 2>/dev/null || /bin/true
 
   if [ -d /opt/dummyjohn ]; then
     echo "==> dummyjohn directory is not empty and will not be removed."
-    echo "    Please check filesat path: '/opt/dummyjohn' and remove it manually."
+    echo "    Please check path: '/opt/dummyjohn' and remove it manually."
   fi
 
   if [ -d /var/log/dummyjohn ]; then
     rm -rf /var/log/dummyjohn
   fi
 }
+
