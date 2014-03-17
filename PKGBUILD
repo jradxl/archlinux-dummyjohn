@@ -15,14 +15,16 @@ depends=('java-runtime-headless')
 #backup=()
 install=$pkgname.install
 
-source=("https://github.com/jradxl/dummyjohn/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+source=("https://github.com/jradxl/dummyjohn/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz"
+        'dummyjohn.service' )
 
 #noextract=("")
 
 # If "ERROR: Integrity checks are missing", then use updpkgsums (previously makepkg -g >> PKGBUILD)
 # and the md5 line will be appended to this file.
 # Each file in source has a md5 value between '' separated by space.
-md5sums=('49c1884d4679daf03f404025f3dd15ed')
+md5sums=('ee131f2926be18de7de0d4dc9deae4f8'
+         '9f9db547f8d05f3502e610c9fbba4f77')
 
 build()
 {
