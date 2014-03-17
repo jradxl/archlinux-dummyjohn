@@ -1,0 +1,72 @@
+#
+#  Install Scriplet for DummyJohn at https://github.com/jradxl/dummyjohn
+#  This Arch script for ArchLinux-DummyJohn at https://github.com/jradxl/archlinux-dummyjohn
+#
+
+
+## arg 1: the new package version
+#pre_install()
+#{
+# do something here
+#}
+
+## arg 1: the new package version
+post_install()
+{
+  groupadd -r dummyjohn
+  useradd -r -g dummyjohn -d /opt/dummyjohn -c "DummyJohn Install and Service for testing" dummyjohn
+
+  chown -R dummyjohn.dummyjohn /opt/dummyjohn
+  chown -R dummyjohn.dummyjohn /var/log/dummyjohn
+
+  ln -sf /var/log/dummyjohn /opt/dummyjohn/log
+  ln -sf /opt/dummyjohn/config /etc/dummyjohn
+  ln -sf /opt/dummyjohn/bin/console.sh /usr/bin/dummyjohn-console
+
+  echo "==> DummyJohn install completed. New User is dummyjohn"
+}
+
+
+## arg 1: the new package version
+## arg 2: the old package version
+#pre_upgrade() {
+# do something here
+#}
+
+## arg 1: the new package version
+## arg 2: the old package version
+post_upgrade()
+{
+  chown -R dummyjohn.dummyjohn /opt/dummyjohn
+  chown -R dummyjohn.dummyjohn /var/log/dummyjohn
+}
+
+## arg 1: the old package version
+pre_remove()
+{
+  if [ "$(ps aux | grep -e '^dummyjohn' | grep -v grep)" != "" ]; then
+    echo -n "==> DummyJohn server is running. Stopping dummyjohn"
+    systemctl stop dummyjohn.service
+    while [ "$(ps aux | grep -e '^dummyjohn' | grep -v grep)" != "" ]; do
+      sleep 1
+    done
+    echo "."
+  fi
+  rm /etc/dummyjohn /usr/bin/dummyjohn-console /opt/dummyjohn/log || /bin/true
+}
+
+## arg 1: the old package version
+post_remove()
+{
+  userdel dummyjohn
+  groupdel dummyjohn 2>/dev/null || /bin/true
+
+  if [ -d /opt/dummyjohn ]; then
+    echo "==> dummyjohn directory is not empty and will not be removed."
+    echo "    Please check filesat path: '/opt/dummyjohn' and remove it manually."
+  fi
+
+  if [ -d /var/log/dummyjohn ]; then
+    rm -rf /var/log/dummyjohn
+  fi
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Dummy Service for testing DummyJohn
+
+[Service]
+Type=simple
+User=dummyjohn
+ExecStart=/opt/dummyjohn/bin/server.sh
+ExecStop=/opt/dummyjohn/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
