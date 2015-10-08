@@ -2,8 +2,8 @@
 # An absolutely useless package, DummyJohn, to test the Build, Install and Service features of Arch/Manjaro Linux
 
 pkgname=dummyjohn
-pkgver=0.1.1
-pkgrel=1
+pkgver=0.1.2
+pkgrel=2
 pkgdesc="DummyJohn dummy package"
 arch=('any')
 license=('Apache')
@@ -64,3 +64,4 @@ package()
 
   #install -m644 "${srcdir}"/dummyjohn.zip "${pkgdir}"/opt/dummyjohn/plugins
 }
+
