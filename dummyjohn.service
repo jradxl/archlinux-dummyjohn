@@ -4,6 +4,7 @@ Description=Dummy Service for testing DummyJohn
 [Service]
 Type=simple
 User=dummyjohn
+Group=dummyjohn
 ExecStart=/opt/dummyjohn/bin/server.sh
 ExecStop=/opt/dummyjohn/bin/shutdown.sh
 
