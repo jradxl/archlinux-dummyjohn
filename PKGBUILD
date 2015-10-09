@@ -3,7 +3,7 @@
 
 pkgname=dummyjohn
 pkgver=0.1.3
-pkgrel=3
+pkgrel=4
 pkgdesc="A dummy package"
 arch=('any')
 license=('Apache')
@@ -26,31 +26,20 @@ source=(
 # and the md5 line will be replaced here.
 # Each file in source has a md5 value between '' separated by space.
 md5sums=('acb6e9626326411c0e2d799492631814'
-         '9f9db547f8d05f3502e610c9fbba4f77')
+         'be12a846d07173b48ab174087b499901')
 
 build()
 {
-echo build
-	pwd
     cd "${srcdir}"/${pkgname}-${pkgver}
     #patch -Np1 -i ../some.patch
-}
-
-xpackage()
-{
-echo package1
-cd ${pkgname}-${pkgver}
-pwd
-install -dm700 "${pkgdir}"/opt/dummyjohn/databases
-install -dm755 "${pkgdir}"/opt/dummyjohn/bin
-cp -r bin/* "${pkgdir}"/opt/dummyjohn/bin/
-cp -r databases/* "${pkgdir}"/opt/dummyjohn/databases/
-echo package2
 }
 
 package()
 {
   cd ${pkgname}-${pkgver}
+
+  #Do not include the Github README.md in the install
+  rm README.md
 
   install -dm755 "${pkgdir}"/opt/dummyjohn
   install -dm705 "${pkgdir}"/opt/dummyjohn/benchmark

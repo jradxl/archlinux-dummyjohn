@@ -15,9 +15,13 @@ pre_install()
 ## arg 1: the new package version
 post_install()
 {
-  groupadd -r dummyjohn
-  useradd -r -g dummyjohn -d /opt/dummyjohn -c "DummyJohn Install and Service for testing" dummyjohn
+  # Test present of group before creating if not exists
+  getent group dummyjohn &>/dev/null || { echo "Adding Group dummyjohn"; groupadd -r dummyjohn; }
 
+  # Test present of user before creating if not exists
+  getent passwd dummyjohn &>/dev/null || { echo "Adding User dummyjohn"; useradd -r -g dummyjohn -M -d /opt/dummyjohn -c "DummyJohn Install and Service for testing" dummyjohn; }
+
+  #Change permissions now that User and Group exist
   chown -R dummyjohn.dummyjohn /opt/dummyjohn
   chown -R dummyjohn.dummyjohn /var/log/dummyjohn
 
@@ -26,7 +30,7 @@ post_install()
   ln -sf /opt/dummyjohn/bin/console.sh /usr/bin/dummyjohn-console
 
   echo "==> Post-install : Argument1 = " $1
-  echo "==> DummyJohn install completed. New User is dummyjohn"
+  echo "==> DummyJohn install completed."
 }
 
 
@@ -42,8 +46,21 @@ pre_upgrade()
 ## arg 2: the old package version
 post_upgrade()
 {
-  echo "==> Post-upgrade : Argument1 = " $1
-  echo "==> Post-upgrade : Argument2 = " $2
+  echo "==> Post-upgrade : Argument1 = " $1 #New version
+  echo "==> Post-upgrade : Argument2 = " $2 #Current version
+
+  # Test present of group before creating if not exists
+  getent group dummyjohn &>/dev/null || { echo "adding group ..."; groupadd -r dummyjohn; }
+
+  # Test present of user before creating if not exists
+  getent passwd dummyjohn &>/dev/null || { echo "adding user ..."; useradd -r -g dummyjohn -M -d /opt/dummyjohn -c "DummyJohn Install and Service for testing" dummyjohn; }
+
+  # Remove extra groups and always force User dummyjohn to have a primary group of dummyjohn
+  if [ $(groups dummyjohn | wc -w) -gt 1 ]; then
+	  usermod -G "" dummyjohn
+      echo "Removed extra groups for User dummyjohn"
+  fi
+  usermod -g dummyjohn dummyjohn
 
   chown -R dummyjohn.dummyjohn /opt/dummyjohn
   chown -R dummyjohn.dummyjohn /var/log/dummyjohn
@@ -70,9 +87,11 @@ post_remove()
 {
   echo "==> Post_remove : Argument1 = " $1
 
-  userdel dummyjohn
-  groupdel dummyjohn 2>/dev/null || /bin/true
-
+  # Remove User and Group
+  getent passwd dummyjohn &>/dev/null && { userdel dummyjohn && echo removed User dummyjohn; }
+  #Depending on /etc/login.defs, usermod may have removed User's group.
+  getent group dummyjohn &>/dev/null && { groupdel dummyjohn && echo removed Group dummyjohn; }
+  
   if [ -d /opt/dummyjohn ]; then
     echo "==> dummyjohn directory is not empty and will not be removed."
     echo "    Please check path: '/opt/dummyjohn' and remove it manually."
